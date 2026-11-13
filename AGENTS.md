@@ -68,7 +68,7 @@ dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release
 .\publish-portable.ps1
 ```
 
-发布脚本会清理并重建 `artifacts/publish/win-x64`，覆盖 `artifacts/FilePermissionReporter-win-x64.zip`。脚本限定输出目录在 `artifacts` 下；调整清理逻辑时须继续检查绝对路径边界。
+发布脚本会清理并重建 `artifacts/publish/win-x64`。默认覆盖 `artifacts/FilePermissionReporter-win-x64.zip`；指定 `-Version 1.2.3` 时输出 `artifacts/FilePermissionReporter-v1.2.3-win-x64.zip` 并写入 EXE 版本元数据。便携 ZIP 包含 README 和 GPL 许可证文本。脚本限定发布目录和 ZIP 文件均在 `artifacts` 下；调整清理/覆盖逻辑时须继续检查绝对路径边界。GitHub 正式发布只由手动 workflow dispatch 启动，不得添加每次推送自动发布。
 
 ## 文档维护
 
