@@ -6,7 +6,7 @@
 
 **项目阶段：** 首版 MVP 已实现；真实企业环境验收仍未完成。
 
-- **当前活动任务：** Codex 已完成 GitHub 手动 Release 自动化并准备提交独立 PR（分支：`codex/release-automation`；工作树：`G:\Codex_Projects\File Permission Reporter-release-automation`；见最近交接记录）。合并到默认分支后才能触发。
+- **当前活动任务：** 无（GitHub 手动 Release 自动化已提交至 Draft PR [#1](https://github.com/Raresoft-Group/File-Permission-Reporter/pull/1)；合并到 `main` 后才能触发）。
 - **当前工作区：** `G:\Codex_Projects\File Permission Reporter`
 - **协作接入：** 用户确认双方访问同一目录。公共仓库 `https://github.com/Raresoft-Group/File-Permission-Reporter` 已创建；本地 `main` 已跟踪 `origin/main`，项目基线已公开推送。首次基线推送的远端提交为 `60ce28f`。
 - **许可证状态：** 用户确认 GNU GPL v3.0-only（`GPL-3.0-only`）。该许可允许商业使用和销售；对外分发修改版时须遵守 GPLv3 并提供相应源码。官方许可证文本已加入本地工作区。
@@ -60,4 +60,4 @@
 | 2026-11-13 | Codex | 用户确认 GNU GPL v3.0-only；官方文本已加入 `LICENSE`，README、AGENTS 和协作台账已同步；本地提交 `b0c83c1` | `git diff --cached --check` 通过；`gh api` 显示账号角色 `push=true`、`admin=true`，但 Git HTTPS 推送及 `gh auth git-credential` 均返回 HTTP 403；`git ls-remote origin` 仍无 refs；未运行应用测试 | 用户更新 `gh` PAT：Resource owner 选择 `Raresoft-Group`，为该仓库授予 `Contents: Read and write`；然后 Codex 重试 push |
 | 2026-11-13 | Codex / 用户 | 配置仓库级 Git Credential Manager 后，首次成功将公开基线推送至 `origin/main`；本地分支已设置上游跟踪；未改动应用代码 | `git push --set-upstream origin main` 退出码 0；`git ls-remote --heads origin main` 返回 `60ce28f72e15669bcd052871e494ce453ee3fb08`；`git status --short --branch` 显示 `main...origin/main`；本次未运行应用测试 | 更新状态文档并推送；随后按 P1 待办继续环境验收 |
 | 2026-11-13 | Codex | 开始 GitHub 按需发布自动化；分支工作树从 `origin/main` 的 `97cd799` 创建，避免纳入共享目录未提交应用改动；文件范围见“当前活动任务” | 尚未验证 | 增加手动 `workflow_dispatch`、稳定 SemVer、Windows 测试与版本化便携包，并完成验证后推送分支、创建 Draft PR。 |
-| 2026-11-13 | Codex | 完成按需 GitHub Release 工作流和文档；增加 `-Version` 版本化便携包、EXE 版本信息与 ZIP 内 GPL 文本；工作内容仅基于 `origin/main`，未包含共享目录中的未提交应用修改 | `actionlint v1.7.12` 通过；嵌入的 5 个 PowerShell 工作流步骤解析通过；`dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release` 5/5 通过；`publish-portable.ps1 -Version 1.2.3` 与无参数构建均成功，ZIP 含 EXE/README/LICENSE，版本 EXE 为 FileVersion `1.2.3.0`、ProductVersion 前缀 `1.2.3`；无效版本 `v1.2.3` 被拒绝且未创建产物；未创建真实 GitHub Release | 推送分支并创建 Draft PR；合并后由用户要求发布时建议版本并确认，再触发 `main` 上的工作流。 |
+| 2026-11-13 | Codex | 完成按需 GitHub Release 工作流和文档；增加 `-Version` 版本化便携包、EXE 版本信息与 ZIP 内 GPL 文本；工作内容仅基于 `origin/main`，未包含共享目录中的未提交应用修改；已推送 `codex/release-automation` 并创建 Draft [PR #1](https://github.com/Raresoft-Group/File-Permission-Reporter/pull/1) | `actionlint v1.7.12` 通过；嵌入的 5 个 PowerShell 工作流步骤解析通过；`dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release` 5/5 通过；`publish-portable.ps1 -Version 1.2.3` 与无参数构建均成功，ZIP 含 EXE/README/LICENSE，版本 EXE 为 FileVersion `1.2.3.0`、ProductVersion 前缀 `1.2.3`；无效版本 `v1.2.3` 被拒绝且未创建产物；未创建真实 GitHub Release | 等待用户审阅并合并 PR #1；合并后由用户要求发布时建议版本并确认，再触发 `main` 上的工作流。 |
