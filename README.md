@@ -2,6 +2,10 @@
 
 Windows desktop utility for reviewing NTFS directory ACLs and creating a self-contained, offline HTML report.
 
+## License
+
+This project is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`). See [LICENSE](LICENSE). Commercial use and sale are permitted under the license terms. When distributing modified versions, comply with GPLv3 and provide the corresponding source as required by the license.
+
 ## Run from source
 
 Requirements: Windows with Desktop Experience, .NET 10 SDK, and an Active Directory logon only if AD group expansion is enabled.
