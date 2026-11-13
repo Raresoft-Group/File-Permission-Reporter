@@ -4,7 +4,9 @@
 
 项目状态的唯一记录是仓库根目录的 `PROJECT_STATUS.md`。架构、约束、验证记录分别见 `AGENTS.md` 和 `docs/` 下的指南。本文件不承诺平台之间自动同步：协作者必须能够读取同一份文件，才能共享进度。
 
-当前已知情况：用户确认 Codex 与 Claude Desktop 访问同一个 `G:\Codex_Projects\File Permission Reporter` 目录。用户指定的组织 URL 是 `https://github.com/Raresoft-Group`，准确 login 为 `Raresoft-Group`。本地 `main` 分支已有基线提交，`origin` 指向 `https://github.com/Raresoft-Group/File-Permission-Reporter.git`；GitHub 上的组织公共仓库尚未创建或当前账号无法访问。GitHub 当前连接能读组织资料，但创建该仓库时返回 `tedxuyuan does not have the correct permissions to execute CreateRepository`。
+当前已知情况：用户确认 Codex 与 Claude Desktop 访问同一个 `G:\Codex_Projects\File Permission Reporter` 目录。用户指定的组织 URL 是 `https://github.com/Raresoft-Group`，准确 login 为 `Raresoft-Group`。用户确认后，已通过网页创建 Public 仓库 `https://github.com/Raresoft-Group/File-Permission-Reporter`；本地 `main` 有基线提交，`origin` 指向该仓库。GitHub 仓库目前为空；`git ls-remote origin` 可访问公开地址但没有 refs，这不验证 CLI 身份或写入权限。创建时没有添加 README、`.gitignore` 或 License；源代码尚未推送。
+
+网页端创建成功说明该浏览器登录态可以在组织下创建仓库；先前 `gh repo create` 失败的 CLI 登录是 `tedxuyuan` 的 keyring PAT（由 `gh auth status` 确认），与网页会话分开。CLI PAT 的组织/仓库权限需要在推送前另行验证；无需为网页端重复申请仓库创建权限。
 
 用户最新说明的许可目标为：商业客户可以使用软件，但不允许他人修改后再商业销售。准确允许的收费服务范围、修改版本的免费分发条件和许可方名称尚待定稿；许可证不能继续按纯非商业用途选择。
 
@@ -12,11 +14,11 @@
 
 | 方式 | 适用情况 | 优点 | 限制 |
 | --- | --- | --- | --- |
-| 同一台 Windows 上打开同一目录（已确认） | Codex 与 Claude Desktop 访问 `G:\Codex_Projects\File Permission Reporter` | 文件状态和本地 Git 基线直接共享，无需复制上下文 | 组织远端尚不可用；必须串行编辑重叠文件；Claude Desktop 未必自动读取 `AGENTS.md` |
-| 两边使用同一个 Git remote 和独立分支 | Codex 与 Claude Desktop 使用不同工作区或机器，或需要可靠回滚/审阅 | 有变更历史、分支隔离、diff 和合并冲突处理 | 组织仓库权限未开通；当前认证无法创建 repo |
+| 同一台 Windows 上打开同一目录（已确认） | Codex 与 Claude Desktop 访问 `G:\Codex_Projects\File Permission Reporter` | 文件状态和本地 Git 基线直接共享，无需复制上下文 | 必须串行编辑重叠文件；Claude Desktop 未必自动读取 `AGENTS.md` |
+| 两边使用同一个 Git remote 和独立分支 | Codex 与 Claude Desktop 使用不同工作区或机器，或需要可靠回滚/审阅 | 有变更历史、分支隔离、diff 和合并冲突处理 | 远端目前为空，许可证定稿并推送基线后才能进行远端协作 |
 | Claude Desktop 只有聊天/附件能力 | 无法直接读取本地路径 | 可通过附加文档和传递 patch 协作 | 进度不是实时共享；每次交接都要重新传递变更，不适合作为无障碍日常协作 |
 
-同一目录访问已由用户确认，所以保存到该目录的状态文件和本地 Git 历史可以共享；`origin` 已配置为组织目标 URL，远端仓库访问权限尚未建立。**文档和 `CLAUDE.md` 不能替代 GitHub 组织权限或桌面端项目配置。**
+同一目录访问已由用户确认，所以保存到该目录的状态文件和本地 Git 历史可以共享；公共远端已创建且公开 URL 可访问，目前尚无远端分支。公开地址读取不验证 CLI 凭据；浏览器端创建成功，CLI 写入权限仍待验证。**文档和 `CLAUDE.md` 不能替代 GitHub 组织权限或桌面端项目配置。**
 
 ### 给 Claude Desktop 的项目指令
 
@@ -56,7 +58,7 @@
 
 - 在同一工作目录协作时，避免同时保存同一文件；保存前重读文件以避免覆盖新内容。
 - 若使用独立工作区，先配置共享 Git remote，并为 Codex、Claude 和用户使用不同分支/工作区；合并前查看完整 diff 并运行对应验证。
-- 当前本地 Git 已建立，`origin` 目标 URL 为 `https://github.com/Raresoft-Group/File-Permission-Reporter.git`；创建公共仓库被 GitHub 以缺少 `CreateRepository` 权限拒绝。不要用个人仓库替代用户指定的组织，也不要在未确定 LICENSE 前公开推送源码。
+- 当前本地 Git 已建立，`origin` 指向 `https://github.com/Raresoft-Group/File-Permission-Reporter.git`。网页端创建仓库已成功；CLI 使用独立的 keyring PAT，先前创建 API 请求被拒。许可证未定稿前不要公开推送源码；推送前先确认 Git 凭据有该仓库的内容写权限。不要用个人仓库替代用户指定的组织。
 - `.gitignore` 排除了 `bin/`、`obj/` 和 `artifacts/`。生成的发布包不是源码变更；客户扫描产生的 HTML/ACL 数据不应提交或附加到共享会话。
 - 涉及用户/客户目录数据时，只使用获准的测试数据；提交给另一协作者的是代码和脱敏的验收结果，不是客户权限清单。
 

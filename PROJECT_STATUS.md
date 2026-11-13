@@ -6,11 +6,11 @@
 
 **项目阶段：** 首版 MVP 已实现；真实企业环境验收仍未完成。
 
-- **当前活动任务：** 本地共同维护基线已建立；许可证边界和组织仓库权限仍待处理。
+- **当前活动任务：** 组织公共仓库已通过网页创建；许可证边界待定，CLI 推送凭据尚未验证。
 - **当前工作区：** `G:\Codex_Projects\File Permission Reporter`
-- **协作接入：** 用户确认双方访问同一目录。本地 `main` 已有基线提交，`origin` 指向 `https://github.com/Raresoft-Group/File-Permission-Reporter.git`；GitHub 上的仓库尚未创建或当前账号无法访问。
+- **协作接入：** 用户确认双方访问同一目录。本地 `main` 已有基线提交；公共仓库 `https://github.com/Raresoft-Group/File-Permission-Reporter` 已创建，`origin` 与其匹配。仓库目前为空；`git ls-remote origin` 能访问公开地址，但不能证明身份验证或写入权限。
 - **许可证状态：** 允许商业客户使用；禁止他人修改后商业销售。许可证的具体分发边界和许可方名称尚待定稿；纯非商业许可证不符合要求。
-- **公开推送门槛：** GitHub 已确认组织 `Raresoft-Group`（说明为 Raresoft Technologies LLC）；创建公共仓库请求被拒，返回 `tedxuyuan does not have the correct permissions to execute CreateRepository`。源代码尚未推送。
+- **公开推送门槛：** 用户已确认创建 Public 仓库；License、README 和 `.gitignore` 均未在 GitHub 初始化。源代码尚未推送，等待许可证定稿。网页端创建成功；CLI 使用 `tedxuyuan` 的 keyring PAT，先前 API 创建请求因 `CreateRepository` 权限失败，Git 推送权限还未验证。
 
 ## 当前基线
 
@@ -39,7 +39,7 @@
 
 | 优先级 | 状态 | 任务 | 验收依据 | 负责人 |
 | --- | --- | --- | --- | --- |
-| P0 | 等组织权限 | 让 `tedxuyuan` 获得在 `Raresoft-Group` 创建公共仓库的权限，或由组织管理员先创建空仓库并授予该账号维护权限 | 公共仓库 `Raresoft-Group/File-Permission-Reporter` 存在，当前账号可 push | 用户/组织管理员 |
+| P0 | 待验证 | 在许可证定稿后确认本机 Git 凭据可向组织仓库写入；CLI 与浏览器登录凭据分开检查 | 用授权的 HTTPS/Git Credential Manager 凭据验证 push 权限；不在文档或聊天中暴露 token | 用户/Codex |
 | P0 | 等许可证定稿 | 明确允许的商业使用/服务范围、修改版本分发与销售边界、许可方名称 | LICENSE 文本可准确表达用户范围，README 与仓库元数据一致 | 用户/项目维护者 |
 | P1 | 未开始 | 在真实 AD 域验证嵌套组、循环、用户/计算机主体、无法解析、权限不足和取消 | 记录环境与实际结果，必要时补自动化或手工验收说明 | 未分配 |
 | P1 | 未开始 | 验证本机 SMB 查询过滤、无权限和无匹配共享；验证 UNC 明确不查询远程共享 | SMB 主机实测结果和 UNC 提示截图/记录 | 未分配 |
@@ -50,7 +50,7 @@
 ## 当前限制和注意事项
 
 - 文档台账不是实时通知。虽然用户已确认双方访问同一目录，每个协作者开始任务前仍应重新读取本页；台账更新要串行进行。
-- 本地 Git 已初始化为 `main` 并提交基线，`origin` 指向指定组织 URL；GitHub 创建仓库请求被拒。远端 history/分支推送仍待组织权限和许可证定稿。
+- 本地 Git 已初始化为 `main` 并提交基线，`origin` 指向已创建的组织仓库；公开地址可访问但远端没有 refs，匿名读取不能证明写权限。浏览器端已创建仓库；CLI `gh auth status` 显示 `tedxuyuan` 的 keyring PAT，和网页登录态分开，写权限未验证。源代码推送仍待许可证定稿。
 - Claude Desktop 能访问同一目录是用户已确认的工作方式；`CLAUDE.md` 是否自动加载仍取决于 Claude Desktop 的模式和项目配置。
 - 不要把真实客户 ACL、路径或 HTML 报告提交到共享源代码仓库。`artifacts/` 已在 `.gitignore` 中忽略。
 
@@ -58,4 +58,4 @@
 
 | 日期 | 协作者 | 变更/结论 | 验证 | 后续 |
 | --- | --- | --- | --- | --- |
-| 2026-11-13 | Codex | 确认组织登录名 `Raresoft-Group`；建立本地 `main` 基线提交，配置目标 `origin`，并将 `.unlighthouse/` 排除 | 27 个源文件和协作文档已提交；`git diff --cached --check` 无问题，`git check-ignore` 确认数据库和 ZIP 被忽略；未运行应用测试；GitHub 拒绝创建，缺少 `CreateRepository` 权限；未推送，LICENSE 未定稿 | 组织授予创建权限/预建仓库，并确认许可证细则 |
+| 2026-11-13 | Codex | 用户确认后通过网页创建 `Raresoft-Group/File-Permission-Reporter` Public 仓库；本地 `origin` 已匹配；`LICENSE`、README 和 `.gitignore` 均未在 GitHub 初始化 | 仓库页面显示 Public；`git ls-remote origin` 返回无 refs，公开仓库可匿名读取，故未验证 CLI 身份或写权限；`gh auth status` 为 `tedxuyuan` 的 keyring PAT；本地源代码未推送，未运行应用测试 | 定稿许可证；随后验证 Git 写凭据并推送本地基线 |
