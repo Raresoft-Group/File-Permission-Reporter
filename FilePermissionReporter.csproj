@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>FilePermissionReporter</AssemblyName>
     <RootNamespace>FilePermissionReporter</RootNamespace>
+    <Version>1.0.0</Version>
     <ApplicationIcon>Assets\FilePermissionReporter.ico</ApplicationIcon>
     <PublishSingleFile>true</PublishSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
@@ -17,6 +18,14 @@
   <ItemGroup>
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="10.0.0" />
     <None Update="README.md" CopyToPublishDirectory="Always" />
+    <None Update="README-CN.md" CopyToPublishDirectory="Always" />
+    <None Update="LICENSE" CopyToPublishDirectory="Always" />
+    <None Update="Assets/FilePermissionReporter.png" CopyToPublishDirectory="Always" />
+    <None Update="docs/ARCHITECTURE.md" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="docs/BUILD_EXE.md" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="docs/MAINTENANCE.md" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="docs/VALIDATION.md" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="docs/RELEASE_NOTES_1.0.0.md" CopyToPublishDirectory="PreserveNewest" />
     <Compile Remove="tests/**/*.cs" />
   </ItemGroup>
 

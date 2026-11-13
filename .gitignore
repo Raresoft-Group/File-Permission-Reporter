@@ -5,3 +5,9 @@ tests/obj/
 artifacts/
 .vs/
 .unlighthouse/
+
+# Local AI collaboration context: keep copies in this checkout, not in GitHub.
+/AGENTS.md
+/CLAUDE.md
+/PROJECT_STATUS.md
+/docs/COLLABORATION.md

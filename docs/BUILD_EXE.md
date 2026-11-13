@@ -10,9 +10,9 @@
 <项目文件夹>\artifacts\publish\win-x64\FilePermissionReporter.exe
 ```
 
-例如项目位于 `G:\Codex_Projects\File Permission Reporter` 时，完整路径为 `G:\Codex_Projects\File Permission Reporter\artifacts\publish\win-x64\FilePermissionReporter.exe`。
+例如项目目录记为 `<项目目录>`，则完整路径为 `<项目目录>\artifacts\publish\win-x64\FilePermissionReporter.exe`。
 
-同一目录下的 `README.md` 为发布包附带的使用说明。`artifacts/` 已在 `.gitignore` 中忽略，编译产物不会被提交到 Git。
+ZIP 包含单文件 EXE、英文和简体中文 README、GPL 许可证、图标预览图以及 `docs/` 下的公开文档。`artifacts/` 已在 `.gitignore` 中忽略，编译产物不会被提交到 Git。
 
 每次编译都会清空并重建 `artifacts\publish\win-x64\`，因此不要把需要保留的文件放在该目录中。
 
@@ -25,7 +25,8 @@
 | 文件形式 | 单个 exe 文件（`PublishSingleFile`） |
 | 压缩 | 启用单文件压缩（`EnableCompressionInSingleFile`） |
 | 调试符号 | 不包含（`DebugType=None`） |
-| 大小 | 约 65 MB |
+| EXE 大小 | 约 65 MB |
+| ZIP 附件 | 双语 README、LICENSE、图标预览图及公开 `docs/` 文档 |
 
 ## 编译要求
 
@@ -72,6 +73,6 @@ dotnet publish FilePermissionReporter.csproj \
 2. 在 Windows 上双击或运行该 exe，确认主窗口能打开。
 3. 运行测试：`dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release`。测试依赖 Windows 桌面运行时，只能在 Windows 上运行。
 
-## 当前状态
+## 验证说明
 
-截至 2026-11-13，最新一次 exe 在 Linux 沙箱中用上述发布参数编译成功，未在 Windows 上运行验证。`dotnet test` 因测试宿主需要 Windows 桌面运行时，尚未在 Windows 上通过。
+发布脚本会执行 Release `win-x64` 自包含发布并生成 ZIP。生成成功只能证明构建完成；目标 Windows 系统的启动和运行验收应单独记录。自动化测试与环境验收的当前证据见[验证边界](VALIDATION.md)。

@@ -1,48 +1,82 @@
-# File Permission Reporter
+<p align="center">
+  <img src="Assets/FilePermissionReporter.png" alt="File Permission Reporter icon" width="112">
+</p>
 
-Windows desktop utility for reviewing NTFS directory ACLs and creating a self-contained, offline HTML report.
+<h1 align="center">File Permission Reporter</h1>
 
-## License
+<p align="center">
+  Review Windows folder permissions and create a self-contained, offline HTML report.
+</p>
 
-This project is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`). See [LICENSE](LICENSE). Commercial use and sale are permitted under the license terms. When distributing modified versions, comply with GPLv3 and provide the corresponding source as required by the license.
+<p align="center"><strong>Version 1.0.0 · .NET 10 · WPF · Windows x64 · English and 简体中文</strong></p>
 
-## Run from source
+<p align="center"><a href="README-CN.md">简体中文</a></p>
 
-Requirements: Windows with Desktop Experience, .NET 10 SDK, and an Active Directory logon only if AD group expansion is enabled.
+File Permission Reporter scans NTFS access control entries (ACEs) and presents the rules found on each directory. It keeps individual rules visible so administrators can review what is configured without confusing that information with a user's effective access.
+
+## Features
+
+- Scan a folder tree with a default depth of three levels, or choose unlimited depth. The selected root is level one.
+- Review Allow and Deny rules, explicit and inherited entries, original rights, masks, identities, and SIDs.
+- Optionally resolve and expand Active Directory groups using the current Windows logon, including nested groups with cycle protection.
+- Optionally collect permissions for matching shares on the local computer. UNC scans do not query remote SMB permissions.
+- Search and browse results in the WPF app, then save them to one offline HTML file with embedded styles, scripts, and scan data.
+- Use the app and report in English or Simplified Chinese.
+
+## Important scope
+
+The report shows the ACL rules collected from each directory. It does **not** calculate effective access, combine Allow and Deny rules, or determine whether a particular user can open a file.
+
+AD and SMB collection are optional. AD lookup uses the current Windows identity; the app does not request or store separate credentials. SMB collection is limited to local shares. A UNC path can still be scanned for NTFS rules, but its remote share permissions are not queried.
+
+## Get started
+
+### Run from source
+
+Requirements: Windows with Desktop Experience and the .NET 10 SDK. An Active Directory logon is needed only when AD group expansion is used.
 
 ```powershell
 dotnet run
 ```
 
-Run the Windows acceptance tests with:
+In the app, choose a folder, set the scan depth and optional collection settings, start the scan, then save the report when it finishes.
+
+### Build the portable package
+
+From the project root on Windows, run:
 
 ```powershell
-dotnet test .\tests\FilePermissionReporter.Tests.csproj
+.\publish-portable.ps1
 ```
 
-## Create the portable package
+The script creates `artifacts/FilePermissionReporter-win-x64.zip`. Extract the ZIP and run `FilePermissionReporter.exe`; the package is self-contained and does not require a separate .NET Desktop Runtime. The script clears and recreates the publish directory, then replaces the ZIP after a successful publish. See [the build guide](docs/BUILD_EXE.md) for details.
+
+### Run the acceptance tests
+
+On Windows with the .NET 10 SDK:
 
 ```powershell
-./publish-portable.ps1
+dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release
 ```
 
-The script creates `artifacts/FilePermissionReporter-win-x64.zip`. The package is self-contained and does not require a .NET Desktop Runtime installation. Run `FilePermissionReporter.exe` from the extracted folder.
+## Requirements and limitations
 
-## Scan behavior
+- Windows x64 with Desktop Experience. Windows Server Core is not supported as a GUI host.
+- SMB collection requires the Windows SMB PowerShell cmdlets to be available.
+- Real Active Directory and SMB environments, failure and cancellation scenarios, large-report interactions, and the Windows Server version matrix have not all received end-to-end validation. Review [validation status](docs/VALIDATION.md) before relying on those scenarios.
 
-- The root directory is depth 1. The default scan depth is 3; enable **Unlimited depth** for the full tree.
-- NTFS rules are read using the current Windows logon. Denied paths are recorded and the scan continues.
-- Junctions and symbolic-link directories are skipped. A selected root that is itself a reparse point is read for its ACL but is not traversed.
-- AD group expansion is optional and uses the current Windows logon. Nested groups are expanded with cycle detection; raw ACL identities remain in the report when lookup fails.
-- Optional SMB collection queries local shares that overlap the selected directory. Remote share permissions are not queried for UNC paths.
-- A cancelled or partially failed scan can still produce a report marked incomplete.
-- The HTML report embeds its CSS, JavaScript and collected data. It does not request network resources. Reports contain account names, directory paths and permissions; store them with appropriate file-system access controls.
+## Reports and privacy
 
-The WPF app runs on Windows client workstations or Windows Server with Desktop Experience. Server Core is not supported as a local GUI host. Share collection uses the Windows PowerShell SMB cmdlets when available.
+Reports include directory paths, account names, SIDs, permissions, and any recorded errors. Treat each report as sensitive access-control information and store or share it accordingly. The generated HTML embeds its data and assets and makes no network requests when opened.
 
-## Developer and maintenance notes
+## Documentation
 
-- [Portable build details](docs/BUILD_EXE.md)
 - [Architecture and data flow](docs/ARCHITECTURE.md)
-- [Maintenance experience and feature checklist](docs/MAINTENANCE.md)
+- [Portable build guide](docs/BUILD_EXE.md)
+- [Maintenance notes](docs/MAINTENANCE.md)
+- [Release notes](docs/RELEASE_NOTES_1.0.0.md)
 - [Test coverage and validation limits](docs/VALIDATION.md)
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`); see [LICENSE](LICENSE). The license permits commercial use and sale. Distribution of modified versions must comply with GPLv3, including providing the corresponding source code to recipients.
