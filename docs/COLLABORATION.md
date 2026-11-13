@@ -6,7 +6,7 @@
 
 当前已知情况：用户确认 Codex 与 Claude Desktop 访问同一个 `G:\Codex_Projects\File Permission Reporter` 目录。用户指定的组织 URL 是 `https://github.com/Raresoft-Group`，准确 login 为 `Raresoft-Group`。用户确认后，已通过网页创建 Public 仓库 `https://github.com/Raresoft-Group/File-Permission-Reporter`；本地 `main` 有基线提交，`origin` 指向该仓库。用户已确认 GNU GPL v3.0-only；官方 LICENSE 文本及 README 说明正在加入本地基线，完成后推送代码。
 
-网页端创建成功说明该网页登录态可以在组织下创建仓库。用户随后手动授予 `tedxuyuan` 仓库 admin 权限；CLI `gh api repos/Raresoft-Group/File-Permission-Reporter --jq '{full_name, private, permissions}'` 返回 `permissions.push=true`、`admin=true`。这验证了当前 CLI API 凭据识别到的仓库权限；首次 `git push` 将验证实际 HTTPS 凭据路径。
+网页端创建成功说明该网页登录态可以在组织下创建仓库。用户随后手动授予 `tedxuyuan` 仓库 admin 权限；CLI `gh api repos/Raresoft-Group/File-Permission-Reporter --jq '{full_name, private, permissions}'` 返回 `permissions.push=true`、`admin=true`。但 Git HTTPS 推送和显式使用 `gh auth git-credential` 均返回 `Permission denied to tedxuyuan` / HTTP 403；当前 token 的内容写权限或资源所有者配置需要检查，远端仍为空。
 
 用户已确认 GNU GPL v3.0-only（SPDX: `GPL-3.0-only`）。该许可允许商业使用和销售；对外分发修改版时须遵守 GPLv3 并提供相应源码。不得再将项目许可描述为禁止商业销售。
 
@@ -18,7 +18,7 @@
 | 两边使用同一个 Git remote 和独立分支 | Codex 与 Claude Desktop 使用不同工作区或机器，或需要可靠回滚/审阅 | 有变更历史、分支隔离、diff 和合并冲突处理 | 首次推送许可证和项目基线后才能进行远端协作 |
 | Claude Desktop 只有聊天/附件能力 | 无法直接读取本地路径 | 可通过附加文档和传递 patch 协作 | 进度不是实时共享；每次交接都要重新传递变更，不适合作为无障碍日常协作 |
 
-同一目录访问已由用户确认，所以保存到该目录的状态文件和本地 Git 历史可以共享；公共远端已创建，但目前尚无远端分支。许可证已定稿；CLI API 已报告 `push=true`，Git HTTPS 凭据路径将在首次推送时验证。**文档和 `CLAUDE.md` 不能替代 GitHub 组织权限或桌面端项目配置。**
+同一目录访问已由用户确认，所以保存到该目录的状态文件和本地 Git 历史可以共享；公共远端已创建，但目前尚无远端分支。许可证已定稿，CLI API 角色显示 `push=true`；实际 Git 传输仍因 PAT 返回 403。**文档和 `CLAUDE.md` 不能替代 GitHub 组织权限或桌面端项目配置。**
 
 ### 给 Claude Desktop 的项目指令
 
@@ -58,7 +58,7 @@
 
 - 在同一工作目录协作时，避免同时保存同一文件；保存前重读文件以避免覆盖新内容。
 - 若使用独立工作区，先配置共享 Git remote，并为 Codex、Claude 和用户使用不同分支/工作区；合并前查看完整 diff 并运行对应验证。
-- 当前本地 Git 已建立，`origin` 指向 `https://github.com/Raresoft-Group/File-Permission-Reporter.git`。`tedxuyuan` 已获仓库 admin，当前 CLI API 返回 `push=true`；Git HTTPS 凭据路径尚未验证。许可证已定稿为 GPL-3.0-only；推送前检查文件清单，推送后确认远端提交和 LICENSE。不要用个人仓库替代用户指定的组织。
+- 当前本地 Git 已建立，`origin` 指向 `https://github.com/Raresoft-Group/File-Permission-Reporter.git`。`tedxuyuan` 已获仓库 admin，API 返回 `push=true`，但 Git push 返回 403。更新 `gh` 细粒度 PAT 时，选择资源所有者 `Raresoft-Group`、目标仓库，并授予 `Contents: Read and write`；不要在聊天或文档中粘贴 token。许可证已定稿为 GPL-3.0-only；不要用个人仓库替代用户指定的组织。
 - `.gitignore` 排除了 `bin/`、`obj/` 和 `artifacts/`。生成的发布包不是源码变更；客户扫描产生的 HTML/ACL 数据不应提交或附加到共享会话。
 - 涉及用户/客户目录数据时，只使用获准的测试数据；提交给另一协作者的是代码和脱敏的验收结果，不是客户权限清单。
 

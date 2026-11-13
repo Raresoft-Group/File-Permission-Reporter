@@ -6,11 +6,11 @@
 
 **项目阶段：** 首版 MVP 已实现；真实企业环境验收仍未完成。
 
-- **当前活动任务：** GNU GPL v3.0-only 已定稿；正在同步许可证和项目文档，随后推送本地基线。
+- **当前活动任务：** GPL-3.0-only 已提交到本地；Git HTTPS 推送被当前凭据拒绝，等待更新 CLI token 后发布基线。
 - **当前工作区：** `G:\Codex_Projects\File Permission Reporter`
 - **协作接入：** 用户确认双方访问同一目录。本地 `main` 已有基线提交；公共仓库 `https://github.com/Raresoft-Group/File-Permission-Reporter` 已创建，`origin` 与其匹配。仓库目前为空；`git ls-remote origin` 能访问公开地址，但不能证明身份验证或写入权限。
 - **许可证状态：** 用户确认 GNU GPL v3.0-only（`GPL-3.0-only`）。该许可允许商业使用和销售；对外分发修改版时须遵守 GPLv3 并提供相应源码。官方许可证文本已加入本地工作区。
-- **公开推送状态：** 用户已确认创建 Public 仓库；`tedxuyuan` 有仓库 admin 权限，CLI API 返回 `permissions.push=true`。LICENSE、README 和项目规则正在同步；完成后推送本地基线。此前未发布任何源码。
+- **公开推送状态：** LICENSE、README 和项目规则已提交到本地。仓库角色 API 返回 `permissions.push=true`，但 `git push`（含 `gh` 凭据助手）返回 `Permission denied to tedxuyuan` / HTTP 403；远端仍为空，未发布源码。
 
 ## 当前基线
 
@@ -39,7 +39,7 @@
 
 | 优先级 | 状态 | 任务 | 验收依据 | 负责人 |
 | --- | --- | --- | --- | --- |
-| P0 | 待推送 | 将 GPL-3.0-only、项目源码和协作文档推送至指定组织仓库 | 远端 `main` 包含本地已审查基线和 LICENSE；确认目标 URL 正确 | Codex |
+| P0 | 凭据阻塞 | 更新 `gh` 使用的细粒度 PAT，使其包含组织仓库 `File-Permission-Reporter` 的 `Contents: Read and write`，然后推送本地 `main` | `git push --set-upstream origin main` 成功，远端包含 `LICENSE` 和全部项目文件 | 用户更新凭据 / Codex 推送 |
 | P1 | 未开始 | 在真实 AD 域验证嵌套组、循环、用户/计算机主体、无法解析、权限不足和取消 | 记录环境与实际结果，必要时补自动化或手工验收说明 | 未分配 |
 | P1 | 未开始 | 验证本机 SMB 查询过滤、无权限和无匹配共享；验证 UNC 明确不查询远程共享 | SMB 主机实测结果和 UNC 提示截图/记录 | 未分配 |
 | P1 | 未开始 | 验证 ACL 拒绝访问、目录变化、网络中断、重解析点和取消后的部分报表 | 每个场景都检查继续行为、问题路径和报告状态 | 未分配 |
@@ -49,7 +49,7 @@
 ## 当前限制和注意事项
 
 - 文档台账不是实时通知。虽然用户已确认双方访问同一目录，每个协作者开始任务前仍应重新读取本页；台账更新要串行进行。
-- 本地 Git 已初始化为 `main` 并提交基线，`origin` 指向已创建的组织仓库；远端没有 refs。许可证已定稿为 GPL-3.0-only；`gh api` 以 `tedxuyuan` 的 keyring PAT 读取到仓库 `permissions.push=true`、`admin=true`。首次 Git push 将验证实际 HTTPS 凭据路径。
+- 本地 Git 已初始化为 `main` 并提交基线，`origin` 指向已创建的组织仓库；远端没有 refs。许可证已定稿为 GPL-3.0-only。`gh api` 显示账号的仓库角色有 push/admin，但 Git HTTPS 推送和显式使用 `gh auth git-credential` 均返回 403；当前 PAT 的仓库内容写权限/资源所有者配置需要检查。
 - Claude Desktop 能访问同一目录是用户已确认的工作方式；`CLAUDE.md` 是否自动加载仍取决于 Claude Desktop 的模式和项目配置。
 - 不要把真实客户 ACL、路径或 HTML 报告提交到共享源代码仓库。`artifacts/` 已在 `.gitignore` 中忽略。
 
@@ -57,4 +57,4 @@
 
 | 日期 | 协作者 | 变更/结论 | 验证 | 后续 |
 | --- | --- | --- | --- | --- |
-| 2026-11-13 | Codex | 用户确认 GNU GPL v3.0-only；已下载官方完整文本到 `LICENSE`，并同步 README、AGENTS 和状态台账 | `git diff --cached --check` 和发布前文件清单待检查；CLI API 已显示 `permissions.push=true`、`admin=true`；尚未推送源码，未运行应用测试 | 检查暂存内容后推送本地基线；之后记录远端验证结果 |
+| 2026-11-13 | Codex | 用户确认 GNU GPL v3.0-only；官方文本已加入 `LICENSE`，README、AGENTS 和协作台账已同步；本地提交 `b0c83c1` | `git diff --cached --check` 通过；`gh api` 显示账号角色 `push=true`、`admin=true`，但 Git HTTPS 推送及 `gh auth git-credential` 均返回 HTTP 403；`git ls-remote origin` 仍无 refs；未运行应用测试 | 用户更新 `gh` PAT：Resource owner 选择 `Raresoft-Group`，为该仓库授予 `Contents: Read and write`；然后 Codex 重试 push |
