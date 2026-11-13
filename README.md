@@ -28,6 +28,12 @@ dotnet test .\tests\FilePermissionReporter.Tests.csproj
 
 The script creates `artifacts/FilePermissionReporter-win-x64.zip`. The package is self-contained and does not require a .NET Desktop Runtime installation. Run `FilePermissionReporter.exe` from the extracted folder.
 
+For a versioned package, pass a stable semantic version without the `v` prefix, for example `./publish-portable.ps1 -Version 1.2.3`. This creates `artifacts/FilePermissionReporter-v1.2.3-win-x64.zip` and stamps the version into the executable metadata. The ZIP includes the README and GPL license text.
+
+## Publish a GitHub release
+
+The repository's **Release** workflow runs only when manually dispatched against `main`; pushes do not publish automatically. After changes are pushed, ask Codex to prepare a release. It reviews the remote changes, recommends a stable `vMAJOR.MINOR.PATCH` version, and waits for your confirmation before dispatching the workflow. GitHub Actions runs the Windows acceptance tests, builds the self-contained ZIP, and publishes a GitHub Release with automatically generated notes. See [release instructions](docs/RELEASES.md).
+
 ## Scan behavior
 
 - The root directory is depth 1. The default scan depth is 3; enable **Unlimited depth** for the full tree.
