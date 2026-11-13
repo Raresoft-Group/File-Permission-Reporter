@@ -30,6 +30,7 @@ public sealed class PermissionEntry
     public string InheritanceFlags { get; init; } = "None";
     public string PropagationFlags { get; init; } = "None";
     public bool IsAdGroup { get; set; }
+    public string DirectoryPath { get; set; } = "";
     public bool GroupResolved { get; set; }
     public List<AdMemberNode> GroupMembers { get; set; } = [];
 }

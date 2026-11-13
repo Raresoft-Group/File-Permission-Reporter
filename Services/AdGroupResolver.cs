@@ -110,7 +110,7 @@ public static class AdGroupResolver
                 principal?.Dispose();
                 principal = null;
                 if (principalWasNotFound && domain is not null && !domain.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase))
-                    throw new InvalidOperationException($"The AD principal '{identityName}' could not be resolved in the current logon context.");
+                    throw new InvalidOperationException($"无法在当前登录上下文中解析 AD 主体“{identityName}”。 / The AD principal '{identityName}' could not be resolved in the current logon context.");
                 return null;
             }
             group = foundGroup;

@@ -5,9 +5,31 @@ $artifactsRoot = [System.IO.Path]::GetFullPath((Join-Path $projectRoot 'artifact
 $publishDirectory = [System.IO.Path]::GetFullPath((Join-Path $artifactsRoot 'publish\win-x64'))
 $zipPath = [System.IO.Path]::GetFullPath((Join-Path $artifactsRoot 'FilePermissionReporter-win-x64.zip'))
 
-if (-not $publishDirectory.StartsWith($artifactsRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+function Assert-NoReparsePointInPath([string]$Path) {
+    $fullPath = [System.IO.Path]::GetFullPath($Path)
+    $pathRoot = [System.IO.Path]::GetPathRoot($fullPath)
+    $currentPath = $pathRoot
+    $separators = [char[]]@([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+
+    foreach ($segment in $fullPath.Substring($pathRoot.Length).Split($separators, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        $currentPath = Join-Path $currentPath $segment
+        $item = Get-Item -LiteralPath $currentPath -Force -ErrorAction SilentlyContinue
+        if ($null -ne $item -and ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) {
+            throw "Refusing to use a reparse point in the publish path: $currentPath"
+        }
+    }
+}
+
+if (-not $publishDirectory.StartsWith($artifactsRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
     throw "Refusing to write outside the artifacts directory: $publishDirectory"
 }
+if (-not $zipPath.StartsWith($artifactsRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Refusing to write outside the artifacts directory: $zipPath"
+}
+
+Assert-NoReparsePointInPath -Path $projectRoot
+Assert-NoReparsePointInPath -Path $publishDirectory
+Assert-NoReparsePointInPath -Path $zipPath
 
 if (Test-Path -LiteralPath $publishDirectory) {
     Remove-Item -LiteralPath $publishDirectory -Recurse -Force

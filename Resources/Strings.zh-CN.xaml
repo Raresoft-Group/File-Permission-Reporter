@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
   <sys:String x:Key="AppTitle">File Permission Reporter</sys:String><sys:String x:Key="AppSubtitle">Windows 文件夹权限扫描与离线报表</sys:String>
-  <sys:String x:Key="RootPath">扫描根目录</sys:String><sys:String x:Key="Browse">浏览…</sys:String><sys:String x:Key="Depth">扫描层级</sys:String><sys:String x:Key="Unlimited">无限层级</sys:String>
+  <sys:String x:Key="RootPath">扫描根目录</sys:String><sys:String x:Key="Browse">浏览…</sys:String><sys:String x:Key="Depth">扫描层级</sys:String><sys:String x:Key="Unlimited">无限层级</sys:String><sys:String x:Key="DepthUp">增加扫描层级</sys:String><sys:String x:Key="DepthDown">减少扫描层级</sys:String><sys:String x:Key="GroupTag">组</sys:String><sys:String x:Key="IncludeSubfolders">包含子文件夹</sys:String><sys:String x:Key="DevelopedBy">开发者：</sys:String>
   <sys:String x:Key="IncludeShares">采集本机共享权限</sys:String><sys:String x:Key="ResolveGroups">递归展开 AD 组</sys:String><sys:String x:Key="Parallelism">并发度</sys:String><sys:String x:Key="Automatic">自动</sys:String>
   <sys:String x:Key="StartScan">开始扫描</sys:String><sys:String x:Key="Cancel">取消</sys:String><sys:String x:Key="SaveReport">生成 HTML 报表</sys:String><sys:String x:Key="OpenReport">打开报表</sys:String>
   <sys:String x:Key="Progress">扫描进度</sys:String><sys:String x:Key="Directories">目录</sys:String><sys:String x:Key="Rules">ACL 条目</sys:String><sys:String x:Key="Principals">唯一 ACL 主体</sys:String>
@@ -12,4 +12,5 @@
   <sys:String x:Key="Name">名称</sys:String><sys:String x:Key="SharePath">共享路径</sys:String><sys:String x:Key="ShareRight">共享权限</sys:String><sys:String x:Key="Stage">阶段</sys:String><sys:String x:Key="Path">路径</sys:String><sys:String x:Key="Message">说明</sys:String>
   <sys:String x:Key="Ready">就绪</sys:String><sys:String x:Key="Scanning">正在扫描</sys:String><sys:String x:Key="ScanComplete">扫描完成</sys:String><sys:String x:Key="ScanIncomplete">扫描完成，但有目录或权限未能读取。</sys:String><sys:String x:Key="ScanCancelled">扫描已取消，已采集的数据仍可生成报表。</sys:String>
   <sys:String x:Key="InputDepthError">扫描层级必须是大于 0 的整数。</sys:String><sys:String x:Key="RootError">请输入可访问的文件夹路径。</sys:String><sys:String x:Key="Saved">报表已保存。</sys:String><sys:String x:Key="UncSharesNotice">当前为 UNC 路径；共享权限仅查询本机共享，因此未采集远程共享权限。</sys:String>
+  <sys:String x:Key="AutoConcurrency">自动（{0}）</sys:String><sys:String x:Key="ScanTimingTip">耗时 {0:N1} 秒 · 跳过 {1:N0} 个重解析点</sys:String>
 </ResourceDictionary>

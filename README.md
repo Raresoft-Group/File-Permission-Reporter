@@ -42,10 +42,7 @@ The WPF app runs on Windows client workstations or Windows Server with Desktop E
 
 ## Developer and maintenance notes
 
-- [Repository instructions](AGENTS.md)
-- [Current project status and backlog](PROJECT_STATUS.md)
-- [Codex and Claude Desktop collaboration guide](docs/COLLABORATION.md)
-- [Claude-oriented project entrypoint](CLAUDE.md)
+- [Portable build details](docs/BUILD_EXE.md)
 - [Architecture and data flow](docs/ARCHITECTURE.md)
 - [Maintenance experience and feature checklist](docs/MAINTENANCE.md)
 - [Test coverage and validation limits](docs/VALIDATION.md)

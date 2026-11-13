@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>File Permission Reporter</title>
+  <desc>A blue folder with a permission report and a teal check mark on a navy background.</desc>
+  <rect x="12" y="12" width="232" height="232" rx="52" fill="#14283F"/>
+  <path d="M48 78 H112 L128 92 H204 Q212 92 212 100 V184 Q212 192 204 192 H48 Q40 192 40 184 V86 Q40 78 48 78 Z" fill="#286BC5"/>
+  <rect x="75" y="43" width="106" height="132" rx="12" fill="#F4F8FC"/>
+  <rect x="95" y="70" width="58" height="8" rx="4" fill="#849BB3"/>
+  <rect x="95" y="95" width="69" height="8" rx="4" fill="#526E8D"/>
+  <rect x="95" y="120" width="48" height="8" rx="4" fill="#849BB3"/>
+  <path d="M43 133 H205 V185 Q205 193 197 193 H51 Q43 193 43 185 Z" fill="#3989F5"/>
+  <circle cx="195" cy="174" r="25" fill="#39C8AA"/>
+  <path d="M183 174 L191 182 L207 164" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

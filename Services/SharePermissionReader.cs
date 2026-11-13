@@ -20,6 +20,8 @@ public static class SharePermissionReader
             $issues = [System.Collections.Generic.List[object]]::new()
             try {
                 $shares = @(Get-SmbShare | Where-Object {
+                    # Built-in shares such as IPC$ have an empty Path; skip them instead of failing the whole query.
+                    if ([string]::IsNullOrWhiteSpace($_.Path)) { return $false }
                     $sharePath = [IO.Path]::GetFullPath($_.Path).TrimEnd('\')
                     $root.Equals($sharePath, [StringComparison]::OrdinalIgnoreCase) -or
                     $root.StartsWith($sharePath + '\', [StringComparison]::OrdinalIgnoreCase) -or

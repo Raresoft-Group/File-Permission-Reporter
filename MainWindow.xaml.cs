@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Navigation;
 using System.Windows.Media;
 using FilePermissionReporter.Models;
 using FilePermissionReporter.Services;
@@ -20,6 +22,7 @@ public partial class MainWindow : Window
     private DirectoryRecord? _selectedDirectory;
     private string? _lastReportPath;
     private bool _english;
+    private int _depthWheelRemainder;
 
     public MainWindow()
     {
@@ -30,7 +33,7 @@ public partial class MainWindow : Window
         LanguageButton.Content = _english ? "中文" : "EN";
         ConcurrencySlider.Maximum = Math.Clamp(Environment.ProcessorCount * 4, 8, 64);
         ConcurrencySlider.Value = Math.Clamp(Environment.ProcessorCount * 2, 4, 32);
-        ConcurrencyValueText.Text = $"Auto ({ConcurrencySlider.Value:0})";
+        UpdateConcurrencyText();
         StatusText.Text = App.Text("Ready");
         UpdateLocalizedHeaders();
         UpdateSearchHints();
@@ -47,6 +50,7 @@ public partial class MainWindow : Window
         UpdateAdMemberCount();
         UpdatePermissionView();
         UpdateSearchHints();
+        UpdateConcurrencyText();
         if (_scanCancellation is null)
             StatusText.Text = _result is null ? App.Text("Ready") : _result.WasCancelled ? App.Text("ScanCancelled") : _result.IsIncomplete ? App.Text("ScanIncomplete") : App.Text("ScanComplete");
     }
@@ -75,7 +79,7 @@ public partial class MainWindow : Window
 
     private void UpdateLocalizedHeaders()
     {
-        SetHeaders(PermissionGrid, "Account", "Rights", "Type", "Inherited");
+        SetHeaders(PermissionGrid, "Account", "Rights", "Type", "Inherited", "Path");
         SetHeaders(ShareGrid, "Name", "SharePath", "Account", "ShareRight", "Type");
         SetHeaders(IssueGrid, "Stage", "Path", "Message");
     }
@@ -112,28 +116,76 @@ public partial class MainWindow : Window
         ShareNoticeText.Visibility = isRemote && ShareCheck.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void UnlimitedCheck_Changed(object sender, RoutedEventArgs e)
+    // 页脚链接交给系统默认浏览器打开，效果为在浏览器新标签页中访问。
+    private void FooterLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
     {
-        if (DepthBox is not null)
-            DepthBox.IsEnabled = UnlimitedCheck.IsChecked != true;
+        Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+        e.Handled = true;
+    }
+
+    private void UnlimitedCheck_Changed(object sender, RoutedEventArgs e) => UpdateDepthControls(true);
+
+    // scanEnabled 为 false 表示扫描进行中；此时层级输入、按钮和滚轮都必须禁用。
+    private void UpdateDepthControls(bool scanEnabled)
+    {
+        if (DepthBox is null || UnlimitedCheck is null)
+            return;
+        var enabled = scanEnabled && UnlimitedCheck.IsChecked != true;
+        DepthBox.IsEnabled = enabled;
+        DepthUpButton.IsEnabled = enabled;
+        DepthDownButton.IsEnabled = enabled;
+    }
+
+    private void DepthUpButton_Click(object sender, RoutedEventArgs e) => AdjustDepth(1);
+
+    private void DepthDownButton_Click(object sender, RoutedEventArgs e) => AdjustDepth(-1);
+
+    private void DepthPanel_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        if (!DepthBox.IsEnabled || e.Delta == 0)
+            return;
+
+        // 触控板可能连续上报小幅滚动量；累计满一个标准刻度（120）才变化 1，避免过快跳动。
+        _depthWheelRemainder += e.Delta;
+        var steps = _depthWheelRemainder / 120;
+        _depthWheelRemainder -= steps * 120;
+        if (steps != 0)
+            AdjustDepth(steps);
+        e.Handled = true;
+    }
+
+    private void AdjustDepth(int delta)
+    {
+        if (!DepthBox.IsEnabled)
+            return;
+
+        // 输入框内容无效时以默认层级 3 为基准，保证按钮和滚轮总有可预期的结果。
+        var current = int.TryParse(DepthBox.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed) && parsed >= 1
+            ? parsed
+            : 3;
+        var next = (int)Math.Clamp((long)current + delta, 1, int.MaxValue);
+        DepthBox.Text = next.ToString(CultureInfo.InvariantCulture);
+        DepthBox.CaretIndex = DepthBox.Text.Length;
     }
 
     private void AutomaticConcurrencyCheck_Changed(object sender, RoutedEventArgs e)
     {
         if (ConcurrencySlider is null)
             return;
-        var automatic = AutomaticConcurrencyCheck.IsChecked == true;
-        ConcurrencySlider.IsEnabled = !automatic;
-        ConcurrencyValueText.Text = automatic ? $"Auto ({ConcurrencySlider.Value:0})" : ConcurrencySlider.Value.ToString("0", CultureInfo.InvariantCulture);
+        ConcurrencySlider.IsEnabled = AutomaticConcurrencyCheck.IsChecked != true;
+        UpdateConcurrencyText();
     }
 
-    private void ConcurrencySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    private void ConcurrencySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) => UpdateConcurrencyText();
+
+    private void UpdateConcurrencyText()
     {
-        if (ConcurrencyValueText is null || ConcurrencySlider is null)
+        if (ConcurrencyValueText is null || ConcurrencySlider is null || AutomaticConcurrencyCheck is null)
             return;
+        var value = ConcurrencySlider.Value.ToString("0", CultureInfo.InvariantCulture);
         ConcurrencyValueText.Text = AutomaticConcurrencyCheck.IsChecked == true
-            ? $"Auto ({ConcurrencySlider.Value:0})"
-            : ConcurrencySlider.Value.ToString("0", CultureInfo.InvariantCulture);
+            ? string.Format(CultureInfo.CurrentCulture, App.Text("AutoConcurrency"), value)
+            : value;
     }
 
     private async void StartScanButton_Click(object sender, RoutedEventArgs e)
@@ -224,7 +276,7 @@ public partial class MainWindow : Window
         RootPathBox.IsEnabled = enabled;
         BrowseButton.IsEnabled = enabled;
         UnlimitedCheck.IsEnabled = enabled;
-        DepthBox.IsEnabled = enabled && UnlimitedCheck.IsChecked != true;
+        UpdateDepthControls(enabled);
         ShareCheck.IsEnabled = enabled;
         AdCheck.IsEnabled = enabled;
         AutomaticConcurrencyCheck.IsEnabled = enabled;
@@ -256,7 +308,7 @@ public partial class MainWindow : Window
         if (ShareCheck.IsChecked == true && RootPathBox.Text.TrimStart().StartsWith("\\\\", StringComparison.Ordinal))
             StatusText.ToolTip = App.Text("UncSharesNotice");
         else
-            StatusText.ToolTip = $"{_result.Duration.TotalSeconds:N1} s · {_result.SkippedReparsePoints:N0} skipped reparse points";
+            StatusText.ToolTip = string.Format(CultureInfo.CurrentCulture, App.Text("ScanTimingTip"), _result.Duration.TotalSeconds, _result.SkippedReparsePoints);
     }
 
     private void UpdateAdMemberCount()
@@ -327,6 +379,28 @@ public partial class MainWindow : Window
         UpdatePermissionView();
     }
 
+    private void IncludeSubfoldersCheck_Changed(object sender, RoutedEventArgs e) => UpdatePermissionView();
+
+    // 返回选中目录；勾选“包含子文件夹”时，按父子路径关系追加全部后代目录。
+    private IEnumerable<DirectoryRecord> ScopeDirectories(DirectoryRecord root, bool includeSubfolders)
+    {
+        yield return root;
+        if (!includeSubfolders || _result is null)
+            yield break;
+
+        var childrenByParent = _result.Directories.ToLookup(directory => directory.ParentPath, StringComparer.OrdinalIgnoreCase);
+        var pending = new Queue<string>();
+        pending.Enqueue(root.Path);
+        while (pending.Count > 0)
+        {
+            foreach (var child in childrenByParent[pending.Dequeue()])
+            {
+                yield return child;
+                pending.Enqueue(child.Path);
+            }
+        }
+    }
+
     private void UpdatePermissionView()
     {
         if (_selectedDirectory is null)
@@ -337,7 +411,14 @@ public partial class MainWindow : Window
         }
 
         var query = PermissionSearchBox.Text.Trim();
-        var permissions = _selectedDirectory.Permissions.AsEnumerable();
+        var includeSubfolders = IncludeSubfoldersCheck.IsChecked == true;
+        PermissionPathColumn.Visibility = includeSubfolders ? Visibility.Visible : Visibility.Collapsed;
+        var permissions = ScopeDirectories(_selectedDirectory, includeSubfolders)
+            .SelectMany(directory => directory.Permissions.Select(permission =>
+            {
+                permission.DirectoryPath = directory.Path;
+                return permission;
+            }));
         if (query.Length > 0)
         {
             permissions = permissions.Where(permission =>
@@ -345,14 +426,25 @@ public partial class MainWindow : Window
                 permission.RightsRaw.Contains(query, StringComparison.OrdinalIgnoreCase) ||
                 permission.RightsMask.ToString(CultureInfo.InvariantCulture).Contains(query, StringComparison.OrdinalIgnoreCase) ||
                 permission.DisplayRights.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                permission.AccessType.Contains(query, StringComparison.OrdinalIgnoreCase));
+                permission.AccessType.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                MemberMatches(permission.GroupMembers, query));
         }
         var filtered = permissions.ToList();
         PermissionGrid.ItemsSource = filtered;
         PermissionEmptyText.Visibility = filtered.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        GroupMembersTree.Visibility = Visibility.Collapsed;
-        GroupMembersTitle.Visibility = Visibility.Collapsed;
-        GroupMembersTree.ItemsSource = null;
+    }
+
+    // 递归检查 AD 组成员（含嵌套子组）的账号与显示名，命中时其所在组行也会显示。
+    private static bool MemberMatches(IEnumerable<AdMemberNode> members, string query)
+    {
+        foreach (var member in members)
+        {
+            if (member.Account.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                member.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                MemberMatches(member.Members, query))
+                return true;
+        }
+        return false;
     }
 
     private void PermissionSearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -367,22 +459,6 @@ public partial class MainWindow : Window
             DirectorySearchHint.Visibility = string.IsNullOrEmpty(DirectorySearchBox.Text) ? Visibility.Visible : Visibility.Collapsed;
         if (PermissionSearchHint is not null)
             PermissionSearchHint.Visibility = string.IsNullOrEmpty(PermissionSearchBox.Text) ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PermissionGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (PermissionGrid.SelectedItem is PermissionEntry entry && entry.IsAdGroup)
-        {
-            GroupMembersTree.ItemsSource = entry.GroupMembers;
-            GroupMembersTree.Visibility = Visibility.Visible;
-            GroupMembersTitle.Visibility = Visibility.Visible;
-        }
-        else
-        {
-            GroupMembersTree.ItemsSource = null;
-            GroupMembersTree.Visibility = Visibility.Collapsed;
-            GroupMembersTitle.Visibility = Visibility.Collapsed;
-        }
     }
 
     private void DirectorySearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -451,7 +527,7 @@ public partial class MainWindow : Window
         var dialog = new SaveFileDialog
         {
             Title = App.Text("SaveReport"),
-            FileName = "report.html",
+            FileName = $"Report-{_result.StartedAt.ToLocalTime().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}.html",
             DefaultExt = ".html",
             Filter = "HTML report (*.html)|*.html|All files (*.*)|*.*",
             AddExtension = true,
