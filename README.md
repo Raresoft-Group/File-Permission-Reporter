@@ -49,7 +49,7 @@ From the project root on Windows, run:
 .\publish-portable.ps1
 ```
 
-The script creates `artifacts/FilePermissionReporter-win-x64.zip`. Extract the ZIP and run `FilePermissionReporter.exe`; the package is self-contained and does not require a separate .NET Desktop Runtime. The script clears and recreates the publish directory, then replaces the ZIP after a successful publish. See [the build guide](docs/BUILD_EXE.md) for details.
+The script creates `artifacts/FilePermissionReporter-win-x64.zip`. Extract the ZIP and run `FilePermissionReporter.exe`; the package is self-contained and does not require a separate .NET Desktop Runtime. The script clears and recreates the publish directory, then replaces the ZIP after a successful publish. See the [1.0.0 release notes](docs/RELEASE_NOTES_1.0.0.md) for the package summary.
 
 ### Run the acceptance tests
 
@@ -63,19 +63,15 @@ dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release
 
 - Windows x64 with Desktop Experience. Windows Server Core is not supported as a GUI host.
 - SMB collection requires the Windows SMB PowerShell cmdlets to be available.
-- Real Active Directory and SMB environments, failure and cancellation scenarios, large-report interactions, and the Windows Server version matrix have not all received end-to-end validation. Review [validation status](docs/VALIDATION.md) before relying on those scenarios.
+- Real Active Directory and SMB environments, failure and cancellation scenarios, large-report interactions, and the Windows Server version matrix have not all received end-to-end validation.
 
 ## Reports and privacy
 
 Reports include directory paths, account names, SIDs, permissions, and any recorded errors. Treat each report as sensitive access-control information and store or share it accordingly. The generated HTML embeds its data and assets and makes no network requests when opened.
 
-## Documentation
+## Release information
 
-- [Architecture and data flow](docs/ARCHITECTURE.md)
-- [Portable build guide](docs/BUILD_EXE.md)
-- [Maintenance notes](docs/MAINTENANCE.md)
 - [Release notes](docs/RELEASE_NOTES_1.0.0.md)
-- [Test coverage and validation limits](docs/VALIDATION.md)
 
 ## License
 

@@ -10,4 +10,8 @@ artifacts/
 /AGENTS.md
 /CLAUDE.md
 /PROJECT_STATUS.md
-/docs/COLLABORATION.md
+
+# Keep detailed project docs local; publish only the version release notes.
+/docs/*.md
+/docs/**/*.md
+!/docs/RELEASE_NOTES_1.0.0.md

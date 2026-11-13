@@ -12,7 +12,7 @@ The first 1.0 release provides a Windows desktop application for reviewing NTFS 
 - Optionally collect permissions for matching shares on the local computer; UNC scans do not query remote SMB permissions.
 - Search and browse results in the WPF app and in the offline report.
 - Use the app and report in English or Simplified Chinese.
-- Build a self-contained `win-x64` ZIP package that includes both README files, the GPL license, and the public documentation.
+- Build a self-contained `win-x64` ZIP package that includes both README files, the GPL license, an icon preview, and these release notes.
 
 ## 简体中文
 
@@ -24,6 +24,6 @@ The first 1.0 release provides a Windows desktop application for reviewing NTFS 
 - 可选采集本机匹配共享的权限；扫描 UNC 路径时不查询远程 SMB 共享权限。
 - 可在 WPF 工作台和离线报告中浏览、搜索结果。
 - 工作台与报告均支持英文和简体中文。
-- 提供自包含 `win-x64` ZIP，内含中英文 README、GPL 许可证和公开项目文档。
+- 提供自包含 `win-x64` ZIP，内含中英文 README、GPL 许可证、图标预览图和本发布说明。
 
 Licensed under GNU GPL v3.0 only (`GPL-3.0-only`).

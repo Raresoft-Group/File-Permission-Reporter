@@ -49,7 +49,7 @@ dotnet run
 .\publish-portable.ps1
 ```
 
-脚本会生成 `artifacts/FilePermissionReporter-win-x64.zip`。解压后运行 `FilePermissionReporter.exe` 即可；程序包为自包含版本，无需另行安装 .NET Desktop Runtime。脚本会清理并重建发布目录，只有发布成功后才会替换 ZIP。详细说明见[便携构建指南](docs/BUILD_EXE.md)。
+脚本会生成 `artifacts/FilePermissionReporter-win-x64.zip`。解压后运行 `FilePermissionReporter.exe` 即可；程序包为自包含版本，无需另行安装 .NET Desktop Runtime。脚本会清理并重建发布目录，只有发布成功后才会替换 ZIP。包内概览见[1.0.0 版本发布说明](docs/RELEASE_NOTES_1.0.0.md)。
 
 ### 运行验收测试
 
@@ -63,19 +63,15 @@ dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release
 
 - Windows x64 桌面体验环境。Windows Server Core 不支持运行此 WPF 图形界面。
 - SMB 采集需要系统提供 Windows SMB PowerShell cmdlet。
-- 真实 Active Directory 和 SMB 环境、错误与取消场景、大型报告交互以及 Windows Server 版本矩阵尚未全部完成端到端验证。依赖这些场景前，请先查看[验证状态](docs/VALIDATION.md)。
+- 真实 Active Directory 和 SMB 环境、错误与取消场景、大型报告交互以及 Windows Server 版本矩阵尚未全部完成端到端验证。
 
 ## 报告与隐私
 
 报告包含目录路径、账号名、SID、权限规则及记录到的错误信息。请将报告视为敏感的访问控制数据，并妥善保存和分享。生成的 HTML 内嵌所需数据与资源，打开时不会发出网络请求。
 
-## 文档
+## 版本信息
 
-- [架构与数据流](docs/ARCHITECTURE.md)
-- [便携构建指南](docs/BUILD_EXE.md)
-- [维护说明](docs/MAINTENANCE.md)
-- [版本发布说明](docs/RELEASE_NOTES_1.0.0.md)
-- [测试覆盖与验证限制](docs/VALIDATION.md)
+- [1.0.0 版本发布说明](docs/RELEASE_NOTES_1.0.0.md)
 
 ## 许可证
 
