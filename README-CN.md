@@ -12,6 +12,10 @@
 
 <p align="center"><a href="README.md">English</a> · 简体中文</p>
 
+<p align="center">
+  <img src="Assets/Screenshot-Preview.jpg" alt="File Permission Reporter 工作界面" width="100%">
+</p>
+
 File Permission Reporter 扫描 NTFS 访问控制条目（ACE），并逐目录展示采集到的权限规则。工具会保留各条规则的独立信息，帮助管理员检查当前配置，避免将采集到的规则误认为用户的最终有效访问权限。
 
 ## 功能

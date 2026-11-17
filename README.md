@@ -12,6 +12,10 @@
 
 <p align="center"><a href="README-CN.md">简体中文</a></p>
 
+<p align="center">
+  <img src="Assets/Screenshot-Preview.jpg" alt="File Permission Reporter application interface" width="100%">
+</p>
+
 File Permission Reporter scans NTFS access control entries (ACEs) and presents the rules found on each directory. It keeps individual rules visible so administrators can review what is configured without confusing that information with a user's effective access.
 
 ## Features
