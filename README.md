@@ -73,6 +73,8 @@ dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release
 
 Reports include directory paths, account names, SIDs, permissions, and any recorded errors. Treat each report as sensitive access-control information and store or share it accordingly. The generated HTML embeds its data and assets and makes no network requests when opened.
 
+See the [anonymized HTML report example](https://raresoft-group.github.io/File-Permission-Reporter/Example/) after GitHub Pages is enabled for this repository.
+
 ## Release information
 
 - [Release notes](docs/RELEASE_NOTES_1.0.0.md)

@@ -73,6 +73,8 @@ dotnet test .\tests\FilePermissionReporter.Tests.csproj --configuration Release
 
 报告包含目录路径、账号名、SID、权限规则及记录到的错误信息。请将报告视为敏感的访问控制数据，并妥善保存和分享。生成的 HTML 内嵌所需数据与资源，打开时不会发出网络请求。
 
+启用本仓库的 GitHub Pages 后，可查看[匿名化 HTML 报告示例](https://raresoft-group.github.io/File-Permission-Reporter/Example/)。
+
 ## 版本信息
 
 - [1.0.0 版本发布说明](docs/RELEASE_NOTES_1.0.0.md)
